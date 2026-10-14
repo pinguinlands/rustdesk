@@ -1,0 +1,41 @@
+name: Pinguins Hub build
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag"
+        required: true
+        default: "pinguins-hub-1.4.9"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    uses: ./.github/workflows/flutter-build.yml
+    secrets: inherit
+    with:
+      upload-artifact: true
+      upload-tag: ${{ inputs.tag }}
+
+  rename-assets:
+    needs: build
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: rustdesk-* -> pinguins-hub-*
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -e
+          rid=$(gh api repos/$GITHUB_REPOSITORY/releases/tags/$TAG -q .id)
+          gh api repos/$GITHUB_REPOSITORY/releases/$rid/assets --paginate -q '.[] | "\(.id) \(.name)"' |
+          while read -r id name; do
+            case "$name" in
+              rustdesk-*) new="pinguins-hub-${name#rustdesk-}"
+                gh api -X PATCH repos/$GITHUB_REPOSITORY/releases/assets/$id -f name="$new" >/dev/null
+                echo "$name -> $new";;
+            esac
+          done

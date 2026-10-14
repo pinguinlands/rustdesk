@@ -1,0 +1,4 @@
+# το root .gitignore αγνοεί *png — εδώ τα θέλουμε
+!*.png
+!*.ico
+!*.svg
