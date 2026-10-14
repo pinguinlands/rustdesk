@@ -72,7 +72,7 @@ errors.clear()
 
 def read(path):
     with open(os.path.join(ROOT, path), "rb") as f:
-        return f.read().decode("utf-8")
+        return f.read().decode("utf-8").replace("\r\n", "\n")
 
 
 def write(path, text):
