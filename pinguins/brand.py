@@ -22,6 +22,11 @@ import re
 import shutil
 import sys
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 ROOT = os.getcwd()
 HERE = os.path.dirname(os.path.abspath(__file__))
 CHECK_ONLY = "--check" in sys.argv
@@ -201,4 +206,4 @@ if copied != EXPECTED_ASSETS:
 
 if errors:
     sys.exit("ΣΦΑΛΜΑ branding (το source άλλαξε; έλεγξε το tag):\n  " + "\n  ".join(errors))
-print(f"{'Έλεγχος OK' if CHECK_ONLY else 'Branding OK'}: server={SERVER}, όνομα={NAME}, assets={copied}")
+print(f"{'Check OK' if CHECK_ONLY else 'Branding OK'}: server={SERVER}, name={NAME}, assets={copied}")
