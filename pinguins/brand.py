@@ -109,6 +109,9 @@ sub(cfgrs, r'^pub const RENDEZVOUS_SERVERS: &\[&str\] = &\[[^\]]*\];$',
     f'pub const RENDEZVOUS_SERVERS: &[&str] = &["{SERVER}"];', regex=True)
 sub(cfgrs, r'^pub const RS_PUB_KEY: &str = "[^"]*";$',
     f'pub const RS_PUB_KEY: &str = "{KEY}";', regex=True)
+sub(cfgrs,
+    '#[cfg(not(any(target_os = "android", target_os = "ios")))]\n            keys::OPTION_VIEW_STYLE => self.get_string(key, "original", vec!["adaptive"]),',
+    '#[cfg(not(any(target_os = "android", target_os = "ios")))]\n            keys::OPTION_VIEW_STYLE => self.get_string(key, "adaptive", vec!["original"]),')
 
 # 2) Εμφανιζόμενο όνομα + απενεργοποίηση ελέγχου ενημερώσεων του rustdesk.com ----
 #    (αλλιώς ο client προτείνει/κάνει auto-update στο ΕΠΙΣΗΜΟ RustDesk και
